@@ -14,10 +14,16 @@ describe("/api/topics", () => {
         .get("/api/topics")
         .expect(200)
         .then(({ body }) => {
-            body.forEach((topic) => {
+            expect(body.topicsArr.length).toBe(3)
+            body.topicsArr.forEach((topic) => {
                 expect(topic).toHaveProperty("slug")
                 expect(topic).toHaveProperty("description")
             })
         })
       });
+    test("status 404 error when there's a typo in the url", () => {
+        return request(app)
+        .get("/api/bananas")
+        .expect(404)
+    })
     });
