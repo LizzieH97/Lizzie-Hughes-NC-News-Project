@@ -1,6 +1,8 @@
+
 {
   "GET /api": {
-    "description": "serves up a json representation of all the available endpoints of the api"
+    "available endpoints": ["topics", "articles"],
+    "msg": "see below for more detailed descriptions of the endpoints"
   },
   "GET /api/topics": {
     "description": "serves an array of all topics",
