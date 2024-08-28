@@ -1,11 +1,20 @@
 const express = require("express");
 const app = express();
-const { getTopics } = require("./app.controllers");
+const { getTopics, documentEndpoints } = require("./app.controllers");
+const fs = require("fs/promises")
 
-app.get("/api/topics", getTopics)
+app.use(express.json());
+
+app.get("/api", documentEndpoints);
+
+app.get("/api/topics", getTopics);
+
+
 
 app.use((err, req, res, next) => {
-    console.log(err)
-})
+    return err
+});
+
+
 
 module.exports = app;

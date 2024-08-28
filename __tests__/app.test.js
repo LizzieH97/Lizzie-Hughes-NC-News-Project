@@ -4,6 +4,8 @@ const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data/index");
 const jestSorted = require("jest-sorted");
+const endpointObj = require("../endpoints.json");
+const fs = require("fs/promises")
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -27,3 +29,34 @@ describe("/api/topics", () => {
         .expect(404)
     })
     });
+describe("/api", () => {
+    test("200: returns the whole documentation", () => {
+        return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({ body }) => {
+            expect(body).toMatchObject({"contents": {
+                "GET /api": {
+                  "available endpoints": ["topics", "articles"],
+                  "msg": "see below for more detailed descriptions of the endpoints"
+                }}})
+        })
+    })
+    test("404: when there's a typo in the url", () => {
+        return request(app)
+        .get("/bananas")
+        .expect(404)
+    })
+    test("200: certain parts of the documentation are reachable", () => {
+        return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.contents["GET /api"]).toEqual({
+                  "available endpoints": ["topics", "articles"],
+                  "msg": "see below for more detailed descriptions of the endpoints"
+                })
+            expect(body.contents["GET /api"]["available endpoints"]).toEqual(["topics", "articles"])
+        })
+    })
+})
