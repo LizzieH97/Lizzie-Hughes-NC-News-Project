@@ -1,24 +1,37 @@
 const topics = require("./db/data/development-data/topics");
 const db = require("./db/connection");
-const endpointObj = require("./endpoints.json")
-const fs = require("fs/promises")
-
-
+const endpointObj = require("./endpoints.json");
+const fs = require("fs/promises");
 
 exports.findEndpoints = () => {
-    return fs.readFile("./endpoints.json", "utf-8")
+  return fs
+    .readFile("./endpoints.json", "utf-8")
     .then((contents) => {
-        const parsedContents = JSON.parse(contents)
-        return parsedContents;
+      const parsedContents = JSON.parse(contents);
+      return parsedContents;
     })
     .catch((err) => {
-        next(err)
-    })
-}
+      next(err);
+    });
+};
 
 exports.findTopics = () => {
-    return db.query(`SELECT * FROM topics`)
-    .then((topics) => {
-        return topics.rows
-    })
-}
+  return db.query(`SELECT * FROM topics`).then((topics) => {
+    return topics.rows;
+  });
+};
+
+exports.findArticleById = (articleIdNum) => {
+  return db
+    .query(`SELECT * FROM articles WHERE article_id = $1`, [articleIdNum])
+    .then((article) => {
+      if (article.rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "Sorry, I couldn't find that article!",
+        });
+      } else {
+        return article.rows;
+      }
+    });
+};
