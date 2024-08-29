@@ -1,4 +1,4 @@
-const { findTopics, findEndpoints, findArticleById } = require("./app.models");
+const { findTopics, findEndpoints, findArticlesWithComments, findArticleById } = require("./app.models");
 
 exports.getTopics = (req, res, next) => {
   return findTopics(req)
@@ -19,6 +19,16 @@ exports.documentEndpoints = (req, res, next) => {
       next(err);
     });
 };
+
+exports.getArticles = (req, res, next) => {
+    return findArticlesWithComments(req)
+    .then((articlesWithComments) => {
+        res.status(200).send({articlesWithComments})
+    })
+    .catch((err) => {
+      next(err)
+    })
+}
 
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;

@@ -98,3 +98,28 @@ describe("/api/articles/:article_id", () => {
       });
   });
 });
+describe("/api/articles", () => {
+    test("200: returns an array of article objects", () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body)
+            expect(body.articlesWithComments.length).toBe(13)
+            const arrOfArticles = body.articlesWithComments
+            arrOfArticles.forEach((article) => {
+                expect(article).toHaveProperty("author")
+                expect(article).toHaveProperty("title")
+                expect(article).toHaveProperty("article_id")
+                expect(article).toHaveProperty("topic")
+                expect(article).toHaveProperty("created_at")
+                expect(article).toHaveProperty("votes")
+                expect(article).toHaveProperty("article_img_url")
+                expect(article).toHaveProperty("comment_count")
+            })
+        })
+    })
+    test("404: when there's a typo in the url", () => {
+      return request(app).get("/api/bananas").expect(404);
+    });
+})
