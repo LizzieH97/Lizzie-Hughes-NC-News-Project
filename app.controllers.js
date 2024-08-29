@@ -1,4 +1,4 @@
-const { findTopics, findEndpoints, findArticlesWithComments, findArticleById, findCommentsByArticleId } = require("./app.models");
+const { findTopics, findEndpoints, findArticlesWithComments, findArticleById, findCommentsByArticleId, postCommentOnArticle } = require("./app.models");
 
 exports.getTopics = (req, res, next) => {
   return findTopics(req)
@@ -52,4 +52,14 @@ exports.getCommentsByArticleId = (req, res, next) => {
   .catch((err) => {
     next(err)
   })
+}
+
+exports.postComment = (req, res, next) => {
+  const { article_id } = req.params;
+  const { username, body } = req.body;
+    return postCommentOnArticle(username, body, article_id)
+    .then((postedComment) => {
+      res.status(201).send({msg: "comment posted!", comment: postedComment[0].body})
+  })
+  
 }
