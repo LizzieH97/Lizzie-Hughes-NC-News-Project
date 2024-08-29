@@ -36,10 +36,25 @@ exports.findArticleById = (articleIdNum) => {
       if (article.rows.length === 0) {
         return Promise.reject({
           status: 404,
-          msg: "Sorry, I couldn't find that article!",
+          msg: "Sorry, I couldn't find that!",
         });
       } else {
         return article.rows;
       }
     });
 };
+
+exports.findCommentsByArticleId = (articleIdNum) => {
+  return db.query(`SELECT * FROM comments WHERE article_id = $1`, [articleIdNum])
+  .then((comments) => {
+    if(comments.rows.length === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: "Sorry, I couldn't find that!",
+      })
+    }
+    else {
+    return comments.rows
+    }
+  })
+}

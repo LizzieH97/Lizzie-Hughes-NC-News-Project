@@ -5,6 +5,7 @@ const {
   documentEndpoints,
   getArticles,
   getArticleById,
+  getCommentsByArticleId
 } = require("./app.controllers");
 const fs = require("fs/promises");
 
@@ -19,11 +20,13 @@ app.get("/api/articles", getArticles);
 
 app.get("/api/articles/:article_id", getArticleById);
 
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId)
+
 app.use((err, req, res, next) => {
   if (err.code === "22P02") {
-    res.status(400).send({ msg: "Sorry, the article ID has to be a number!" });
+    res.status(400).send({ msg: "Sorry, try again!" });
   }
-  if (err.msg === "Sorry, I couldn't find that article!") {
+  if (err.msg === "Sorry, I couldn't find that!") {
     res.status(404).send({ err });
   } else {
     next(err);
