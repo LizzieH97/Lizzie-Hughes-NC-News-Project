@@ -3,6 +3,7 @@ const app = express();
 const {
   getTopics,
   documentEndpoints,
+  getArticles,
   getArticleById,
 } = require("./app.controllers");
 const fs = require("fs/promises");
@@ -12,6 +13,9 @@ const fs = require("fs/promises");
 app.get("/api", documentEndpoints);
 
 app.get("/api/topics", getTopics);
+
+app.get("/api/articles", getArticles);
+
 
 app.get("/api/articles/:article_id", getArticleById);
 
