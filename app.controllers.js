@@ -1,4 +1,4 @@
-const { findTopics, findEndpoints, findArticlesWithComments, findArticleById } = require("./app.models");
+const { findTopics, findEndpoints, findArticlesWithComments, findArticleById, findCommentsByArticleId } = require("./app.models");
 
 exports.getTopics = (req, res, next) => {
   return findTopics(req)
@@ -41,3 +41,15 @@ exports.getArticleById = (req, res, next) => {
       next(err);
     });
 };
+
+exports.getCommentsByArticleId = (req, res, next) => {
+  const { article_id } = req.params;
+  const articleIdNum = parseInt(article_id);
+  return findCommentsByArticleId(articleIdNum)
+  .then((comments) => {
+    res.status(200).send({comments})
+  })
+  .catch((err) => {
+    next(err)
+  })
+}

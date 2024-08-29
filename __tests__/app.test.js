@@ -86,7 +86,7 @@ describe("/api/articles/:article_id", () => {
       .get("/api/articles/35")
       .expect(404)
       .then(({ body }) => {
-        expect(body.err.msg).toBe("Sorry, I couldn't find that article!");
+        expect(body.err.msg).toBe("Sorry, I couldn't find that!");
       });
   });
   test("400: returns bad request when given an incorrect data type", () => {
@@ -94,7 +94,7 @@ describe("/api/articles/:article_id", () => {
       .get("/api/articles/oh-no")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Sorry, the article ID has to be a number!");
+        expect(body.msg).toBe("Sorry, try again!");
       });
   });
 });
@@ -104,7 +104,6 @@ describe("/api/articles", () => {
         .get("/api/articles")
         .expect(200)
         .then(({ body }) => {
-          console.log(body)
             expect(body.articlesWithComments.length).toBe(13)
             const arrOfArticles = body.articlesWithComments
             arrOfArticles.forEach((article) => {
@@ -123,3 +122,38 @@ describe("/api/articles", () => {
       return request(app).get("/api/bananas").expect(404);
     });
 })
+describe("/api/articles/:article_id/comments", () => {
+  test("200: responds with all relevant comments", () => {
+    return request(app)
+    .get("/api/articles/1/comments")
+    .expect(200)
+    .then(({ body }) => {
+      console.log(body)
+      expect(body.comments.length).toBe(11)
+        body.comments.forEach((comment) => {
+          expect(comment).toHaveProperty("comment_id")
+          expect(comment).toHaveProperty("votes")
+          expect(comment).toHaveProperty("created_at")
+          expect(comment).toHaveProperty("author")
+          expect(comment).toHaveProperty("body")
+          expect(comment).toHaveProperty("article_id")
+        })
+      })
+    })
+    test("400: throws error when given a bad article id", () => {
+      return request(app)
+      .get("/api/articles/lizzie/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Sorry, try again!")
+      })
+    })
+    test("404: throws error when article id is correct type but not on the table", () => {
+      return request(app)
+      .get("/api/articles/500/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.err.msg).toBe("Sorry, I couldn't find that!")
+      })
+    })
+  })
