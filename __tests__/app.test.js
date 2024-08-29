@@ -86,7 +86,7 @@ describe("/api/articles/:article_id", () => {
       .get("/api/articles/35")
       .expect(404)
       .then(({ body }) => {
-        expect(body.err.msg).toBe("Sorry, I couldn't find that!");
+        expect(body.msg).toBe("Sorry, I couldn't find that article!");
       });
   });
   test("400: returns bad request when given an incorrect data type", () => {
@@ -94,7 +94,7 @@ describe("/api/articles/:article_id", () => {
       .get("/api/articles/oh-no")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Sorry, try again!");
+        expect(body.msg).toBe("Sorry - not found!");
       });
   });
 });
@@ -122,13 +122,12 @@ describe("/api/articles", () => {
       return request(app).get("/api/bananas").expect(404);
     });
 })
-describe("/api/articles/:article_id/comments", () => {
+describe("/api/articles/:article_id/comments GET", () => {
   test("200: responds with all relevant comments", () => {
     return request(app)
     .get("/api/articles/1/comments")
     .expect(200)
     .then(({ body }) => {
-      console.log(body)
       expect(body.comments.length).toBe(11)
         body.comments.forEach((comment) => {
           expect(comment).toHaveProperty("comment_id")
@@ -145,7 +144,7 @@ describe("/api/articles/:article_id/comments", () => {
       .get("/api/articles/lizzie/comments")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Sorry, try again!")
+        expect(body.msg).toBe("Sorry - not found!")
       })
     })
     test("404: throws error when article id is correct type but not on the table", () => {
@@ -153,7 +152,29 @@ describe("/api/articles/:article_id/comments", () => {
       .get("/api/articles/500/comments")
       .expect(404)
       .then(({ body }) => {
-        expect(body.err.msg).toBe("Sorry, I couldn't find that!")
+        expect(body.msg).toBe("Sorry, I couldn't find that article!")
       })
     })
   })
+  describe("/api/articles/:article_id/comments POST", () => {
+    test("201: successfully inserts a comment", () => {
+      return request(app)
+      .post("/api/articles/2/comments")
+      .expect(201)
+      .send({username: "lurker", body: "I just got engaged!!!"})
+      .then(({ body }) => {
+        expect(body.msg).toBe("comment posted!")
+        expect(body.comment).toBe("I just got engaged!!!")
+      })
+      })
+      test("400: throws error when given a bad article id", () => {
+        return request(app)
+        .get("/api/articles/lizzie/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Sorry - not found!")
+        })
+      })
+    })
+  
+  

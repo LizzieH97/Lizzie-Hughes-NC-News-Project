@@ -5,11 +5,11 @@ const {
   documentEndpoints,
   getArticles,
   getArticleById,
-  getCommentsByArticleId
+  getCommentsByArticleId, postComment
 } = require("./app.controllers");
 const fs = require("fs/promises");
 
-// app.use(express.json());
+app.use(express.json());
 
 app.get("/api", documentEndpoints);
 
@@ -22,12 +22,14 @@ app.get("/api/articles/:article_id", getArticleById);
 
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId)
 
+app.post("/api/articles/:article_id/comments", postComment)
+
 app.use((err, req, res, next) => {
   if (err.code === "22P02") {
-    res.status(400).send({ msg: "Sorry, try again!" });
+    res.status(400).send({ msg: "Sorry - not found!" });
   }
-  if (err.msg === "Sorry, I couldn't find that!") {
-    res.status(404).send({ err });
+  if (err.status && err.msg) {
+    res.status(404).send({ msg: err.msg });
   } else {
     next(err);
   }
