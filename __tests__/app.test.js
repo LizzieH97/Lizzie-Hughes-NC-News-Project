@@ -184,5 +184,32 @@ describe("/api/articles/:article_id/comments GET", () => {
         })
       })
     })
-  
+  describe("/api/articles/:article_id PATCH", () => {
+    test("202: updates the votes property on an article", () => {
+      return request(app)
+      .patch("/api/articles/1")
+      .send({inc_votes: "5"})
+      .expect(202)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Votes updated!")
+        expect(body.new_votes).toBe(105)
+      })
+    })
+    test("400: throws error when given a bad article id", () => {
+      return request(app)
+      .patch("/api/articles/hello")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Sorry - hello is not a valid data type for this url!")
+      })
+    })
+    test("404: throws error when given an article id of the correct data type but it doesn't exist", () => {
+      return request(app)
+      .patch("/api/articles/555")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Sorry, that article does not exist!")
+      })
+    })
+  })
   
