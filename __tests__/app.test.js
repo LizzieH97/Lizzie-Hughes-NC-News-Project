@@ -94,7 +94,7 @@ describe("/api/articles/:article_id", () => {
       .get("/api/articles/oh-no")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Sorry - not found!");
+        expect(body.msg).toBe("Sorry - oh-no is not a valid data type for this url!");
       });
   });
 });
@@ -144,7 +144,7 @@ describe("/api/articles/:article_id/comments GET", () => {
       .get("/api/articles/lizzie/comments")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Sorry - not found!")
+        expect(body.msg).toBe("Sorry - lizzie is not a valid data type for this url!")
       })
     })
     test("404: throws error when article id is correct type but not on the table", () => {
@@ -157,22 +157,30 @@ describe("/api/articles/:article_id/comments GET", () => {
     })
   })
   describe("/api/articles/:article_id/comments POST", () => {
-    test("201: successfully inserts a comment", () => {
+    test("201: successfully inserts a comment and returns the posted comment", () => {
       return request(app)
       .post("/api/articles/2/comments")
       .expect(201)
       .send({username: "lurker", body: "I just got engaged!!!"})
       .then(({ body }) => {
         expect(body.msg).toBe("comment posted!")
-        expect(body.comment).toBe("I just got engaged!!!")
+        expect(body.comment).toMatchObject({article_id: 2, author: "lurker", body: "I just got engaged!!!", comment_id: 19})
       })
       })
       test("400: throws error when given a bad article id", () => {
         return request(app)
-        .get("/api/articles/lizzie/comments")
+        .post("/api/articles/lizzie/comments")
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).toBe("Sorry - not found!")
+          expect(body.msg).toBe("Sorry - lizzie is not a valid data type for this url!")
+        })
+      })
+      test("404: throws error when given an article id of the correct data type but it doesn't exist", () => {
+        return request(app)
+        .post("/api/articles/555/comments")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Sorry, that article does not exist!")
         })
       })
     })

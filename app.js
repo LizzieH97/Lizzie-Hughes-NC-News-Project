@@ -26,7 +26,15 @@ app.post("/api/articles/:article_id/comments", postComment)
 
 app.use((err, req, res, next) => {
   if (err.code === "22P02") {
-    res.status(400).send({ msg: "Sorry - not found!" });
+    const invalidPath = req.path
+    const invalidPathArr = invalidPath.split("/")
+    let invalidDataStr = ""
+    for(let i=0; i<invalidPathArr.length; i++){
+       if(invalidPathArr[i] === "articles"){
+        invalidDataStr += invalidPathArr[i+1]
+       }
+    }
+    return res.status(400).send({ msg: `Sorry - ${invalidDataStr} is not a valid data type for this url!` });
   }
   if (err.status && err.msg) {
     res.status(404).send({ msg: err.msg });

@@ -59,7 +59,10 @@ exports.postComment = (req, res, next) => {
   const { username, body } = req.body;
     return postCommentOnArticle(username, body, article_id)
     .then((postedComment) => {
-      res.status(201).send({msg: "comment posted!", comment: postedComment[0].body})
+      res.status(201).send({msg: "comment posted!", comment: postedComment})
+  })
+  .catch((err) => {
+    next(err)
   })
   
 }
