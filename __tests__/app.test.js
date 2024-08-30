@@ -235,4 +235,23 @@ describe("/api/articles/:article_id/comments GET", () => {
       })
     })
   })
+  describe("/api/users GET", () => {
+    test("200: returns an array of user objects", () => {
+      return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        body.users.forEach((user) => {
+          expect(user).toHaveProperty("username")
+          expect(user).toHaveProperty("name")
+          expect(user).toHaveProperty("avatar_url")
+        })
+      })
+    })
+    test("404: throws an error when given an incorrect url", () => {
+      return request(app)
+      .get("/api/444")
+      .expect(404)
+    })
+  })
   

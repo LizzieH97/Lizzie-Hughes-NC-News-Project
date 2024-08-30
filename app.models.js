@@ -98,3 +98,10 @@ return db.query(`DELETE FROM comments WHERE comment_id = $1 RETURNING *`, [comme
   }
 })
 }
+
+exports.findUsers = (req) => {
+  return db.query(`SELECT * FROM users`)
+  .then(({ rows }) => {
+    return rows
+  })
+}
