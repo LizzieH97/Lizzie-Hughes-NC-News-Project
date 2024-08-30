@@ -2,6 +2,7 @@ const topics = require("./db/data/development-data/topics");
 const db = require("./db/connection");
 const endpointObj = require("./endpoints.json");
 const fs = require("fs/promises");
+// const { checkExists } = require("./db/seeds/utils")
 
 exports.findEndpoints = () => {
   return fs
@@ -60,8 +61,16 @@ exports.findCommentsByArticleId = (articleIdNum) => {
 }
 
 exports.postCommentOnArticle = (username, body, article_id) => {
-  return db.query(`INSERT INTO comments(author, body, article_id) VALUES ($1, $2, $3) RETURNING *`, [username, body, article_id])
-  .then(({ rows }) => {
-    return rows
-  })
+  if(article_id<=13){
+    return db.query(`INSERT INTO comments(author, body, article_id) VALUES ($1, $2, $3) RETURNING *`, [username, body, article_id])
+  .then((response) => {
+    return response.rows[0]
+  }) 
+}
+else if(article_id > 13) {
+  return Promise.reject({status: 404, msg: "Sorry, that article does not exist!"})
+}
+else {
+  return Promise.reject({code: "22P02"})
+}
 }

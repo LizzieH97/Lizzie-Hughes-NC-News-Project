@@ -1,4 +1,18 @@
 const format = require("pg-format")
+const db = require("../connection")
+
+// exports.checkExists = (comment, article_id, value) => {
+//   const queryStr = format("SELECT * FROM %I WHERE %I = $1;", comment, article_id);
+//   console.log(queryStr)
+//   return db.query(queryStr, [value])
+//   .then(({ rows }) => {
+//      if (rows.length === 0) {
+//     // resource does NOT exist
+//     return Promise.reject({ status: 404, msg: "Sorry, I couldn't find that article!" });
+//   }
+//   })
+ 
+// };
 
 exports.convertTimestampToDate = ({ created_at, ...otherProperties }) => {
   if (!created_at) return { ...otherProperties };
