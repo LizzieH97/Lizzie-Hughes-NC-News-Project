@@ -212,4 +212,27 @@ describe("/api/articles/:article_id/comments GET", () => {
       })
     })
   })
+  describe("/api/comments/:comment_id DELETE", () => {
+    test("204: successfully deletes the comment with the correct comment_id", () => {
+      return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+    })
+    test("404: throws error when given a comment id of the correct data type but it doesn't exist", () => {
+      return request(app)
+      .delete("/api/comments/555")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Sorry, that comment does not exist!")
+      })
+    })
+    test("400: throws error when given a bad comment id", () => {
+      return request(app)
+      .delete("/api/comments/hello")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Sorry - hello is not a valid data type for this url!")
+      })
+    })
+  })
   

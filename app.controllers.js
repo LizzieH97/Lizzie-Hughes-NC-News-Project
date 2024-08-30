@@ -1,4 +1,4 @@
-const { findTopics, findEndpoints, findArticlesWithComments, findArticleById, findCommentsByArticleId, postCommentOnArticle, findArticleVotes } = require("./app.models");
+const { findTopics, findEndpoints, findArticlesWithComments, findArticleById, findCommentsByArticleId, postCommentOnArticle, findArticleVotes, findComment } = require("./app.models");
 
 exports.getTopics = (req, res, next) => {
   return findTopics(req)
@@ -72,6 +72,17 @@ exports.updateVotes = (req, res, next) => {
   return findArticleVotes(inc_votes, article_id)
   .then((updatedRows) => {
     res.status(202).send({msg: "Votes updated!", new_votes: updatedRows.votes})
+  })
+  .catch((err) => {
+    next(err)
+  })
+}
+
+exports.deleteCommentById = (req, res, next) => {
+  const { comment_id } = req.params
+  return findComment(comment_id)
+  .then(() => {
+    res.status(204).send()
   })
   .catch((err) => {
     next(err)
