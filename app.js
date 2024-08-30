@@ -5,7 +5,7 @@ const {
   documentEndpoints,
   getArticles,
   getArticleById,
-  getCommentsByArticleId, postComment, updateVotes, deleteCommentById
+  getCommentsByArticleId, postComment, updateVotes, deleteCommentById, getUsers
 } = require("./app.controllers");
 const fs = require("fs/promises");
 
@@ -26,6 +26,8 @@ app.post("/api/articles/:article_id/comments", postComment)
 app.patch("/api/articles/:article_id", updateVotes)
 
 app.delete("/api/comments/:comment_id", deleteCommentById)
+
+app.get("/api/users", getUsers)
 
 app.use((err, req, res, next) => {
   if (err.code === "22P02") {
