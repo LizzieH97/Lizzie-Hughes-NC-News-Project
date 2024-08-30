@@ -63,7 +63,17 @@
   "POST /api/articles/:article_id/comments":{
     "description": "posts a comment on the correct article with that article ID",
     "queries": [],
-    "example response": {"username": "lurker", "body": "I just got engaged!!!"}
+    "example response": {"msg": "comment posted", "comment":{"username": "lurker", "body": "I just got engaged!!!"}
+  }},
+  "PATCH /api/articles/:article_id": {
+    "description": "updates the votes property on an article",
+    "queries": [],
+    "example response": {"msg": "Votes updated!", "new_votes": 105}
+  },
+  "DELETE /api/comments/:comments_id": {
+    "description": "deletes a comment with the correct id", 
+    "queries": [],
+    "example response": {"status": 204, "note": "(no comment with this one!)"}
   }
   }
 

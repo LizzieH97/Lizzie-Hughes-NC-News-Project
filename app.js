@@ -5,7 +5,7 @@ const {
   documentEndpoints,
   getArticles,
   getArticleById,
-  getCommentsByArticleId, postComment, updateVotes
+  getCommentsByArticleId, postComment, updateVotes, deleteCommentById
 } = require("./app.controllers");
 const fs = require("fs/promises");
 
@@ -17,7 +17,6 @@ app.get("/api/topics", getTopics);
 
 app.get("/api/articles", getArticles);
 
-
 app.get("/api/articles/:article_id", getArticleById);
 
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId)
@@ -25,6 +24,8 @@ app.get("/api/articles/:article_id/comments", getCommentsByArticleId)
 app.post("/api/articles/:article_id/comments", postComment)
 
 app.patch("/api/articles/:article_id", updateVotes)
+
+app.delete("/api/comments/:comment_id", deleteCommentById)
 
 app.use((err, req, res, next) => {
   if (err.code === "22P02") {
@@ -35,6 +36,9 @@ app.use((err, req, res, next) => {
        if(invalidPathArr[i] === "articles"){
         invalidDataStr += invalidPathArr[i+1]
        }
+      if(invalidPathArr[i] === "comments" && i !== invalidPathArr.length-1){
+        invalidDataStr += invalidPathArr[i+1]
+      }
     }
     return res.status(400).send({ msg: `Sorry - ${invalidDataStr} is not a valid data type for this url!` });
   }
