@@ -5,7 +5,7 @@ const {
   documentEndpoints,
   getArticles,
   getArticleById,
-  getCommentsByArticleId, postComment
+  getCommentsByArticleId, postComment, updateVotes
 } = require("./app.controllers");
 const fs = require("fs/promises");
 
@@ -23,6 +23,8 @@ app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId)
 
 app.post("/api/articles/:article_id/comments", postComment)
+
+app.patch("/api/articles/:article_id", updateVotes)
 
 app.use((err, req, res, next) => {
   if (err.code === "22P02") {
