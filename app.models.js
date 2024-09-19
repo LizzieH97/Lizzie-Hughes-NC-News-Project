@@ -65,18 +65,21 @@ exports.findCommentsByArticleId = (articleIdNum) => {
 exports.postCommentOnArticle = (username, body, article_id) => {
   return db
     .query(
-      `INSERT INTO comments(author, body, article_id) VALUES ($1, $2, $3) RETURNING *`,
+      `INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *`,
       [username, body, article_id]
     )
     .then((response) => {
-      if (response.rows !== 0) {
-        return response.rows[0];
-      } else if (response.rows === 0) {
+      if (response.rows.length === 0) {
+        console.log("for the 404");
         return Promise.reject({
           status: 404,
           msg: "Sorry, that article does not exist!",
         });
+      } else if (response.rows.length !== 0) {
+        console.log("if it's there");
+        return response.rows[0];
       } else {
+        console.log("for the 400");
         return Promise.reject({ code: "22P02" });
       }
     });
