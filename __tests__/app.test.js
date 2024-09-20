@@ -269,3 +269,10 @@ describe("/api/users GET", () => {
     return request(app).get("/api/444").expect(404);
   });
 });
+describe("/api/articles?topic=:topic GET", () => {
+  test("200: returns the correct article by its id", () => {
+    return request(app).get("/api/articles?topic=mitch").expect(200);
+
+    //for front end, further testing needed
+  });
+});

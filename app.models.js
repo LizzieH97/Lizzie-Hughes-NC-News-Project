@@ -70,13 +70,11 @@ exports.postCommentOnArticle = (username, body, article_id) => {
     )
     .then((response) => {
       if (response.rows.length === 0) {
-        console.log("for the 404");
         return Promise.reject({
           status: 404,
           msg: "Sorry, that article does not exist!",
         });
       } else if (response.rows.length !== 0) {
-        console.log("if it's there");
         return response.rows[0];
       } else {
         console.log("for the 400");
@@ -124,4 +122,12 @@ exports.findUsers = (req) => {
   return db.query(`SELECT * FROM users`).then(({ rows }) => {
     return rows;
   });
+};
+
+exports.findArticlesByCategory = (topic) => {
+  return db
+    .query(`SELECT * FROM articles WHERE topic = $1`, [topic])
+    .then((response) => {
+      return response.rows;
+    });
 };

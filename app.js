@@ -10,6 +10,7 @@ const {
   updateVotes,
   deleteCommentById,
   getUsers,
+  getArticlesByCategory,
 } = require("./app.controllers");
 const fs = require("fs/promises");
 const cors = require("cors");

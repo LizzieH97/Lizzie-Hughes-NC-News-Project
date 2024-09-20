@@ -1,4 +1,15 @@
-const { findTopics, findEndpoints, findArticlesWithComments, findArticleById, findCommentsByArticleId, postCommentOnArticle, findArticleVotes, findComment, findUsers } = require("./app.models");
+const {
+  findTopics,
+  findEndpoints,
+  findArticlesWithComments,
+  findArticleById,
+  findCommentsByArticleId,
+  postCommentOnArticle,
+  findArticleVotes,
+  findComment,
+  findUsers,
+  findArticlesByCategory,
+} = require("./app.models");
 
 exports.getTopics = (req, res, next) => {
   return findTopics(req)
@@ -21,14 +32,23 @@ exports.documentEndpoints = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-    return findArticlesWithComments(req)
+  const queryKeys = Object.keys(req.query)[0];
+
+  if (req.query.topic) {
+    return findArticlesByCategory(req.query.topic).then(
+      (articlesInCategory) => {
+        res.status(200).send({ articlesInCategory });
+      }
+    );
+  }
+  return findArticlesWithComments(req)
     .then((articlesWithComments) => {
-        res.status(200).send({articlesWithComments})
+      res.status(200).send({ articlesWithComments });
     })
     .catch((err) => {
-      next(err)
-    })
-}
+      next(err);
+    });
+};
 
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
@@ -46,55 +66,57 @@ exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const articleIdNum = parseInt(article_id);
   return findCommentsByArticleId(articleIdNum)
-  .then((comments) => {
-    res.status(200).send({comments})
-  })
-  .catch((err) => {
-    next(err)
-  })
-}
+    .then((comments) => {
+      res.status(200).send({ comments });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
 
 exports.postComment = (req, res, next) => {
   const { article_id } = req.params;
   const { username, body } = req.body;
-    return postCommentOnArticle(username, body, article_id)
+  return postCommentOnArticle(username, body, article_id)
     .then((postedComment) => {
-      res.status(201).send({msg: "comment posted!", comment: postedComment})
-  })
-  .catch((err) => {
-    next(err)
-  })
-}
+      res.status(201).send({ msg: "comment posted!", comment: postedComment });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
 
 exports.updateVotes = (req, res, next) => {
-  const { article_id } = req.params
-  const { inc_votes } = req.body
+  const { article_id } = req.params;
+  const { inc_votes } = req.body;
   return findArticleVotes(inc_votes, article_id)
-  .then((updatedRows) => {
-    res.status(202).send({msg: "Votes updated!", new_votes: updatedRows.votes})
-  })
-  .catch((err) => {
-    next(err)
-  })
-}
+    .then((updatedRows) => {
+      res
+        .status(202)
+        .send({ msg: "Votes updated!", new_votes: updatedRows.votes });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
 
 exports.deleteCommentById = (req, res, next) => {
-  const { comment_id } = req.params
+  const { comment_id } = req.params;
   return findComment(comment_id)
-  .then(() => {
-    res.status(204).send()
-  })
-  .catch((err) => {
-    next(err)
-  })
-}
+    .then(() => {
+      res.status(204).send();
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
 
 exports.getUsers = (req, res, next) => {
   return findUsers(req)
-  .then((users) => {
-    res.status(200).send({users})
-  })
-  .catch((err) => {
-    next(err)
-  })
-}
+    .then((users) => {
+      res.status(200).send({ users });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
